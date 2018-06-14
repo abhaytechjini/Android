@@ -29,9 +29,9 @@ public class WeatherController extends AppCompatActivity {
 
     // Constants:
     final int REQUEST_CODE = 123;
-    final String WEATHER_URL = "http://api.openweathermap.org/data/2.5/weather";
+    final String WEATHER_URL = "http://api.openweathermap.org/data/2.5/weather?lat=12.91891&lon=77.58551&appid=06d97305963de8d65fe7a02e623e5b97";
     // App ID to use OpenWeather data
-    final String APP_ID = "e72____PLEASE_REPLACE_ME_____13";
+    final String APP_ID = "06d97305963de8d65fe7a02e623e5b97";
     // Time between location updates (5000 milliseconds or 5 seconds)
     final long MIN_TIME = 5000;
     // Distance between location updates (1000m or 1km)
@@ -96,7 +96,7 @@ public class WeatherController extends AppCompatActivity {
                 RequestParams params = new RequestParams();
                 params.put("lat",latitude);
                 params.put("lon",longitude);
-                params.put("app_id",APP_ID);
+                params.put("appid",APP_ID);
                 letsDoSomeNetworking(params);
             }
 
@@ -147,12 +147,17 @@ public class WeatherController extends AppCompatActivity {
     private void letsDoSomeNetworking(RequestParams params)
     {
         AsyncHttpClient client = new AsyncHttpClient();
-        client.get(WEATHER_URL,params,new JsonHttpResponseHandler()
+        client.get(WEATHER_URL, params, new JsonHttpResponseHandler()
                 {
                     @Override
                     public void onSuccess(int statusCode, Header[] headers, JSONObject response)
                     {
                         Log.d("Clima App","Success : Json Response" + response.toString());
+                        WeatherDataModel weatherData = WeatherDataModel.fromJson(response);
+                        if (weatherData != null)
+                        {
+                            updateUI(weatherData);
+                        }
                     }
 
                     @Override
@@ -167,6 +172,14 @@ public class WeatherController extends AppCompatActivity {
     }
 
     // TODO: Add updateUI() here:
+    private void updateUI(WeatherDataModel weather)
+    {
+        mTemperatureLabel.setText(weather.getmTemperature());
+        mCityLabel.setText(weather.getmCity());
+
+        int resourceID = getResources().getIdentifier(weather.getmIconName(), "drawable", getPackageName());
+        mWeatherImage.setImageResource(resourceID);
+    }
 
 
 
