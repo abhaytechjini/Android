@@ -26,9 +26,7 @@ public class WeatherDataModel {
 
             weatherData.mTemperature = Integer.toString(roundedValue);
             return weatherData;
-        }
-
-        catch (JSONException e) {
+        } catch (JSONException e) {
             e.printStackTrace();
             return null;
         }
